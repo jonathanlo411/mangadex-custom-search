@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custon MangaDex</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+    <script src="{{url_for('static', filename='app.js')}}" defer></script>
+</head>
+<body>
+    <section>
+    {% for manga in context.filtered %}
+
+        <div class="card">
+            {{manga.attributes.title.en}}
+            {{manga}}
+        </div>
+
+    {% endfor %}
+    </section>
+</body>
+</html>

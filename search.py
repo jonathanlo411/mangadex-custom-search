@@ -1,6 +1,10 @@
 # Imports
 import requests as r
 from json import load
+from flask import Flask, request, render_template
+
+# Setup
+app = Flask(__name__)
 
 # Globals
 BASE_URL = "https://api.mangadex.org"
@@ -8,6 +12,9 @@ TAGS = r.get(
     f"{BASE_URL}/manga/tag"
 ).json()
 
+
+# --- Page Render ---
+@app.route('/', methods=['GET'])
 def main():
     # Load tags
     config = load(open('config.json', 'r'))
@@ -38,7 +45,7 @@ def main():
         if links and 'mal' in links:
             filtered.append(manga)
 
-    print(filtered)
+    return render_template('index.html', context={'filtered': filtered})
     
 
 
