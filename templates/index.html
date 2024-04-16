@@ -8,29 +8,50 @@
     <script src="{{url_for('static', filename='app.js')}}" defer></script>
 </head>
 <body>
-    <section>
-    {% for manga in context.filtered %}
+    <main>
 
-        <a
-            class="card"
-            href="https://mangadex.org/title/{{manga.id}}"
-            target="_blank"
-            rel="norefferrer"
-        >
-            <img src="/mdimg?md={{manga.id}}&fn={{context.covers[manga.id]}}.256.jpg" />
-            {% if manga.attributes.title.en %}
-            <h1>{{manga.attributes.title.en}}</h1>
-            {% elif manga.attributes.title.kr %}
-            <h1>{{manga.attributes.title.kr}}</h1>
-            {% elif manga.attributes.title['ja-ro'] %}
-            <h1>{{manga.attributes.title['ja-ro']}}</h1>
-            {% else %}
-            <h1>Title Not Available</h1>
-            {{manga.attributes.title}}
-            {% endif %}
-        </a>
+        <h1>Custom MangaDex Search</h1>
+        <div>
+            <h2>Original Language</h2>
+            <div id="lang">
+                <label class="container">Korean
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container">Japanese
+                    <input type="checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            
+            <h2>Tags</h2>
+            <div id="tags">
+            </div>
+        </div>
+        <section>
+        {% for manga in context.filtered %}
 
-    {% endfor %}
-    </section>
+            <a
+                class="card"
+                href="https://mangadex.org/title/{{manga.id}}"
+                target="_blank"
+                rel="norefferrer"
+            >
+                <img src="/mdimg?md={{manga.id}}&fn={{context.covers[manga.id]}}.256.jpg" />
+                {% if manga.attributes.title.en %}
+                    <h1>{{manga.attributes.title.en}}</h1>
+                {% elif manga.attributes.title.kr %}
+                    <h1>{{manga.attributes.title.kr}}</h1>
+                {% elif manga.attributes.title['ja-ro'] %}
+                    <h1>{{manga.attributes.title['ja-ro']}}</h1>
+                {% else %}
+                    <h1>Title Not Available</h1>
+                {% endif %}
+            </a>
+
+        {% endfor %}
+        </section>
+
+    </main>
 </body>
 </html>

@@ -47,7 +47,7 @@ def landing() -> None:
 
 # --- APIs ---
 @app.route('/mdimg', methods=['GET'])
-def get_image() -> None:
+def get_image() -> Response:
     manga_id = request.args['md']
     filename = request.args['fn']
     res = r.get(
@@ -55,6 +55,10 @@ def get_image() -> None:
     )
     return Response(res.content, headers=dict(res.headers))
 
+@app.route('/tags', methods=['GET'])
+def get_tags() -> Response:
+    tag_names = list(map(lambda x: x['attributes']['name']['en'], TAGS['data']))
+    return tag_names, 200
 
 # === Helpers ===
 
