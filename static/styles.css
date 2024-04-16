@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+/* Page Overhead */
+* {
+    box-sizing: border-box;
+    margin: 0;
+
+    /* Color Vars */
+    --base: #2c2c2c;
+    --highlight: #fc6444;
+    --font: white;
+}
+body {
+    font-family: 'Inter';
+    background-color: var(--base);
+}
+
+/* Main Query Page */
+section {
+    display: grid;
+    grid-template-columns: repeat(5, 20%);
+    grid-auto-rows: 1fr;
+    width: 100%;
+    padding: 2%;
+}
+
+.card, .card:visited {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin: 1rem;
+    color: var(--font);
+    width: fit-content;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transition: 0.3s;
+}
+.card:hover {
+    cursor: pointer;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+}
+.card img {
+    max-height: 300px;
+    width: auto;
+}
+.card h1 {
+    position: absolute;
+    bottom: 0;
+    background: linear-gradient(to top, black, rgba(0, 0, 0, 0));
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+}

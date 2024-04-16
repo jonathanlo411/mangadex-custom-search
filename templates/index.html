@@ -11,10 +11,25 @@
     <section>
     {% for manga in context.filtered %}
 
-        <div class="card">
-            {{manga.attributes.title.en}}
-            <img src="https://uploads.mangadex.org/covers/{{manga.id}}/{{context.covers[manga.id]}}">
-        </div>
+        <a
+            class="card"
+            href="https://mangadex.org/title/{{manga.id}}"
+            target="_blank"
+            rel="norefferrer"
+        >
+            <img src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_3x4.jpg" />
+            {% if manga.attributes.title.en %}
+            <h1>{{manga.attributes.title.en}}</h1>
+            {% elif manga.attributes.title.kr %}
+            <h1>{{manga.attributes.title.kr}}</h1>
+            {% elif manga.attributes.title['ja-ro'] %}
+            <h1>{{manga.attributes.title['ja-ro']}}</h1>
+            {% else %}
+            <h1>Title Not Available</h1>
+            {{manga.attributes.title}}
+            {% endif %}
+        </a>
+        <!-- https://uploads.mangadex.org/covers/{{manga.id}}/{{context.covers[manga.id]}} -->
 
     {% endfor %}
     </section>
