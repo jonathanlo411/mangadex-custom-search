@@ -9,13 +9,134 @@
     --base: #2c2c2c;
     --highlight: #fc6444;
     --font: white;
+
+    --include: rgb(25, 116, 25);
+    --exclude: rgb(100, 41, 41);
 }
 body {
     font-family: 'Inter';
     background-color: var(--base);
+    color: var(--font);
 }
 
 /* Main Query Page */
+main {
+    width: min(95%, 1200px);
+    margin: auto;
+}
+h1 {
+    font-size: 3em;
+    padding: 1rem 0;
+    font-weight: 600;
+}
+h2 {
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
+/* Query Options */
+#lang {
+    display: flex;
+}
+#tags {
+    margin: 1rem;
+}
+.tag {
+    background-color: rgb(37, 37, 37);
+    color: var(--font);
+    padding: 0.3rem 0.5rem;
+    border: none;
+    border-radius: 5px;
+    margin: 0.2rem;
+    font-size: 0.8rem;
+    border: 2px solid rgba(0, 0, 0, 0);
+}
+.tag:hover {
+    cursor: pointer;
+    opacity: 0.7;
+}
+.include {
+    background-color: var(--include);
+    border: 2px solid green;
+}
+.exclude {
+    background-color: var(--exclude);
+    border: 2px dotted red
+}
+.container {
+    display: block;
+    position: relative;
+    padding-left: 1.6rem;
+    margin-bottom: 0.55rem;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--font);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: fit-content;
+    margin: 1rem;
+}
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+.checkmark {
+    position: absolute;
+    top: 0.09rem;
+    left: 0;
+    height: 1rem;
+    width: 1rem;
+    background-color: #eee;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+.container input:checked ~ .checkmark {
+    background-color: var(--highlight);
+}
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+.container .checkmark:after {
+    top: 0.31rem;
+    left: 0.3rem;
+    width: 0.38rem;
+    height: 0.38rem;
+    border-radius: 50%;
+    background: var(--font);
+}
+.search-bt {
+    padding: 0.4rem 2rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 5px;
+    width: 10rem;
+    margin: 0 0.7rem;
+}
+.search-bt:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+#submit {
+    background-color: var(--highlight);
+    color: var(--font);
+    border: 1px solid orangered;
+}
+
+
+/* Manga Display */
 section {
     display: grid;
     grid-template-columns: repeat(5, 20%);
@@ -23,7 +144,6 @@ section {
     width: 100%;
     padding: 2%;
 }
-
 .card, .card:visited {
     display: flex;
     align-items: center;
