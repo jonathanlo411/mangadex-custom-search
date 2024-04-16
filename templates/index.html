@@ -15,11 +15,11 @@
             <h2>Original Language</h2>
             <div id="lang">
                 <label class="container">Korean
-                    <input type="checkbox">
+                    <input type="checkbox" id="ko">
                     <span class="checkmark"></span>
                 </label>
                 <label class="container">Japanese
-                    <input type="checkbox">
+                    <input type="checkbox" id="ja">
                     <span class="checkmark"></span>
                 </label>
             </div>
@@ -27,6 +27,8 @@
             <h2>Tags</h2>
             <div id="tags">
             </div>
+            <button class='search-bt' id="submit">Search</button>
+            <button class='search-bt' id="clear">Clear</button>
         </div>
         <section>
         {% for manga in context.filtered %}
