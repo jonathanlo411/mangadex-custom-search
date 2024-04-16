@@ -26,8 +26,7 @@ def landing() -> None:
     filtered = filter_mangadex(starter)
 
     # Get Manga covers
-    cover_ids = get_cover_ids(filtered)
-    cover_filenames = obtain_cover_filenames(cover_ids)
+    cover_filenames = obtain_cover_filenames(filtered)
 
     return render_template('index.html', context={
         'filtered': filtered,
@@ -59,7 +58,8 @@ def make_request(includes: list[str], excludes: list[str], offest=0) -> dict:
             "excludedTags[]": excludes,
             "order[followedCount]": 'desc',
             "limit": 100,
-            "offset": offest
+            "offset": offest,
+            "includes[]": 'cover_art'
         }
     )
     clean = res.json()
@@ -97,40 +97,21 @@ def filter_mangadex(mangadex_res: dict) -> list:
     return filtered
 
 
-def get_cover_ids(mangadex_res: dict) -> list:
+def obtain_cover_filenames(mangadex_res: dict) -> dict:
     """
-    Parses the cover art ID from the MangaDex response object.
-    """
-    relationships = list(map(lambda x: x['relationships'], mangadex_res))
-    cover_ids_pre = [
-        relationship for sublist in relationships
-        for relationship in sublist
-            if relationship['type'] == 'cover_art'
-    ]
-    cover_ids = list(map(lambda x: x['id'], cover_ids_pre))
-    return cover_ids
+    Iterates through manga results returned from filter_mangadex() and
+    finds their cover art filenames.
 
-
-def obtain_cover_filenames(manga_cover_ids: list[str]) -> list[str]:
+    Returns a dictionary with the MangaDex ID
+    and its corresponding cover art filename.
     """
-    Given a Manga Cover ID, will obtain the filename. Necessary for displaying the image.
-    """
-    # Make MangaDex Query
-    query_string = '&ids[]='.join(manga_cover_ids)
-    res = r.get(
-        f'{BASE_URL}/cover?ids[]={query_string}',
-        params={
-            'limit': 100
-        }
-    )
-    clean = res.json()
-
-    # Process Query to obtain valid pairs
     filenames = {}
-    for manga_entry in clean['data']:
-        filename = manga_entry['attributes']['fileName']
-        manga_relation = list(filter(lambda x: x['type'] == 'manga', manga_entry['relationships']))
-        manga_id = manga_relation[0]['id']
-        filenames[manga_id] = filename
+    for manga in mangadex_res:
+        for relation in manga["relationships"]:
+            if relation["type"] == "cover_art":
+                cover_art_filename = relation["attributes"]["fileName"]
+                manga_id = manga["id"]
+                filenames[manga_id] = cover_art_filename
+                continue
 
     return filenames
