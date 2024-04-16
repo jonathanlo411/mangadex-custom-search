@@ -4,3 +4,4 @@ config.json
 # Python Overhead
 __pycache__
 venv
+.vercel
