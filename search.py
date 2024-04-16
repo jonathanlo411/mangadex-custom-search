@@ -1,7 +1,7 @@
 # Imports
 import requests as r
 from json import load
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response
 
 # Setup
 app = Flask(__name__)
@@ -33,7 +33,19 @@ def landing() -> None:
         'filtered': filtered,
         'covers': cover_filenames
     })
-    
+
+
+# --- APIs ---
+@app.route('/mdimg', methods=['GET'])
+def get_image() -> None:
+    manga_id = request.args['md']
+    filename = request.args['fn']
+    res = r.get(
+        f'https://uploads.mangadex.org/covers/{manga_id}/{filename}'
+    )
+    return Response(res.content, headers=dict(res.headers))
+
+
 # === Helpers ===
 
 def make_request(includes: list[str], excludes: list[str], offest=0) -> dict:

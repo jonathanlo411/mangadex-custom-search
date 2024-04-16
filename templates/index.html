@@ -17,7 +17,7 @@
             target="_blank"
             rel="norefferrer"
         >
-            <img src="https://i.natgeofe.com/n/548467d8-c5f1-4551-9f58-6817a8d2c45e/NationalGeographic_2572187_3x4.jpg" />
+            <img src="/mdimg?md={{manga.id}}&fn={{context.covers[manga.id]}}.256.jpg" />
             {% if manga.attributes.title.en %}
             <h1>{{manga.attributes.title.en}}</h1>
             {% elif manga.attributes.title.kr %}
@@ -29,7 +29,6 @@
             {{manga.attributes.title}}
             {% endif %}
         </a>
-        <!-- https://uploads.mangadex.org/covers/{{manga.id}}/{{context.covers[manga.id]}} -->
 
     {% endfor %}
     </section>
