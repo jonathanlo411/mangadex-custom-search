@@ -18,6 +18,21 @@ body {
     background-color: var(--base);
     color: var(--font);
 }
+body::-webkit-scrollbar {
+    height: 0.3rem;
+    width: 0.3rem;
+}
+body::-webkit-scrollbar-track {
+    background: none;
+}
+body::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    background-color: #ccc;
+    transition: 0.2s;
+}
+body::-webkit-scrollbar-thumb:hover {
+    background: #b4b4b4;
+}
 
 /* Main Query Page */
 main {
@@ -137,11 +152,11 @@ section {
     border-radius: 5px;
     overflow: hidden;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    transition: 0.3s;
+    transition: 0.2s;
 }
 .card:hover {
     cursor: pointer;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
 }
 .card img {
     max-height: 300px;
