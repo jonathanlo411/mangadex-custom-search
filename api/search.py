@@ -85,7 +85,7 @@ def make_request(
         "excludedTags[]": excludes,
         "order[followedCount]": 'desc',
         "limit": 100,
-        "offset": offest,
+        "offset": min(9999, offest),
         "includes[]": 'cover_art',
     }
     if original_language:
