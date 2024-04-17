@@ -11,8 +11,13 @@
 <body>
     <main>
 
+        <div id="heading">
         <h1>Custom MangaDex Search</h1>
-        <div>
+        <p>Custom search for MangaDex. Built with the purpose of discovering new manga/manhwa in mind. For more information about website see <a href="/about">here</a>.</p>
+        </div>
+        
+        <!-- Form Stuff -->
+        <div> 
             <h2>Original Language</h2>
             <div id="lang">
                 <label class="container">Korean
@@ -26,8 +31,28 @@
             </div>
             
             <h2>Tags</h2>
-            <div id="tags">
+            <div id="tags"></div>
+
+            <h2>Special Conditions</h2>
+            <div id="spec">
+                <div id="mal">
+                    <label class="container">Has MyAnimeList Link
+                        <input type="checkbox" id="mal-check" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <div id="mal-lock">
+                        <div id="mal-list">
+                            <label>Not in User MyAnimeList List</label>
+                            <input id='mal-username' placeholder="MAL Username">
+                        </div>
+                        <div id="mal-min">
+                            <label>Minimum MyAnimeList Score</label>
+                            <input id='mal-min-score' type="number" value="0" min="0" max="10">
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <button class='search-bt' id="submit">Search</button>
             <button class='search-bt' id="clear">Clear</button>
         </div>
