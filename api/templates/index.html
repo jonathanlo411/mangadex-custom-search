@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custon MangaDex</title>
+    <title>Custon MangaDex Search</title>
     <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
     <script src="{{url_for('static', filename='app.js')}}" defer></script>
+    <link rel="icon" href="{{url_for('static', filename='imgs/favicon.png')}}" />
 </head>
 <body>
     <main>
@@ -15,11 +16,11 @@
             <h2>Original Language</h2>
             <div id="lang">
                 <label class="container">Korean
-                    <input type="checkbox">
+                    <input type="checkbox" id="ko">
                     <span class="checkmark"></span>
                 </label>
                 <label class="container">Japanese
-                    <input type="checkbox">
+                    <input type="checkbox" id="ja">
                     <span class="checkmark"></span>
                 </label>
             </div>
@@ -27,6 +28,8 @@
             <h2>Tags</h2>
             <div id="tags">
             </div>
+            <button class='search-bt' id="submit">Search</button>
+            <button class='search-bt' id="clear">Clear</button>
         </div>
         <section>
         {% for manga in context.filtered %}
