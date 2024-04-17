@@ -1,8 +1,11 @@
 # Imports
 import requests as r
 from flask import Flask, request, render_template, Response
+from dotenv import load_dotenv
+import os
 
 # Setup
+load_dotenv()
 app = Flask(__name__)
 
 # Globals
@@ -16,7 +19,9 @@ TAGS: dict = r.get(
 @app.route('/', methods=['GET'])
 def landing() -> None:
     # Process pagination
-    offest = int(request.args['p']) * 100 if 'p' in request.args else 0
+    offest = 0
+    if 'p' in request.args and len(request.args['p']) > 0:
+        offest = int(request.args['p']) * 100
 
     # Handle tag logic
     includes: list[str] = []
@@ -28,13 +33,17 @@ def landing() -> None:
         excludes = obtain_tags(exclude_raw)
 
     # Process original language
-    original_language = None
-    if 'ln' in request.args:
-        original_language = request.args['ln']
+    original_language = request.args['ln'] if 'ln' in request.args else None
+
+    # Process MyAnimeList
+    has_mal = not (request.args['noMal'] if 'noMal' in request.args else False)
+    mal_user = request.args['malUser'] if 'malUser' in request.args else None
+    mal_min_score = request.args['malMinScore'] if 'malMinScore' in request.args else None
 
     # Get Manga items
     starter = make_request(includes, excludes, offest, original_language)
-    filtered = filter_mangadex(starter)
+    if starter == 0: return render_template('index.html', context={'filtered':{}})
+    filtered = filter_mangadex(starter, has_mal, mal_user, mal_min_score)
 
     # Get Manga covers
     cover_filenames = obtain_cover_filenames(filtered)
@@ -43,6 +52,11 @@ def landing() -> None:
         'filtered': filtered,
         'covers': cover_filenames
     })
+
+
+@app.route('/about', methods=['GET'])
+def about() -> None:
+    return render_template('about.html')
 
 
 # --- APIs ---
@@ -77,7 +91,7 @@ def make_request(
         "excludedTags[]": excludes,
         "order[followedCount]": 'desc',
         "limit": 100,
-        "offset": offest,
+        "offset": min(9999, offest),
         "includes[]": 'cover_art',
     }
     if original_language:
@@ -109,17 +123,60 @@ def obtain_tags(tags: list[str]) -> list[str]:
     ]
 
 
-def filter_mangadex(mangadex_res: dict) -> list:
+def filter_mangadex(
+        mangadex_res: dict,
+        has_mal=True,
+        malUser=False,
+        minMalScore=0
+    ) -> list:
     """
     Filters the MangaDex response using custom filters. Current conditions:
     - Has a MyAnimeList link
+    - Not in a User's MyAnimeList Manga list
+    - Has a minimum MyAnimelist score
     """
-    # Ensure that there is a mal link
     filtered = []
-    for manga in mangadex_res['data']:
-        links = manga['attributes']['links']
-        if links and 'mal' in links:
-            filtered.append(manga)
+    if has_mal:
+        if malUser:
+            # Check if in user Manga list
+            res = r.get(
+                f'https://api.myanimelist.net/v2/users/{malUser}/mangalist',
+                params={
+                    'limit': 1000,
+                    'manga_id': 'Descending'
+                },
+                headers={
+                    'X-MAL-CLIENT-ID': os.getenv('MAL_CID')
+                }            
+            )
+            clean = res.json()
+
+
+            # Validate
+            if not 'data' in clean:
+                print('Someting went wrong!', flush=True)
+                return []
+            id_hash_table = {item['node']['id']: True for item in clean['data']}
+
+
+        # Ensure that there is a mal link
+        for manga in mangadex_res['data']:
+            links = manga['attributes']['links']
+            if links and 'mal' in links:
+
+                # Check the MAL score
+                mal_link = links['mal']
+                if minMalScore and not check_myanimelist_score(mal_link, minMalScore):
+                    continue
+
+                # Check that it is not in user's list
+                if malUser and int(mal_link) in id_hash_table:
+                    continue
+
+                filtered.append(manga)
+    else:
+        return mangadex_res['data']
+
     return filtered
 
 
@@ -141,3 +198,21 @@ def obtain_cover_filenames(mangadex_res: dict) -> dict:
                 continue
 
     return filenames
+
+def check_myanimelist_score(myanimelist_id: int, min_score: float) -> bool:
+    """
+    Fetches MyAnimeList data to check score is above the minimum threshold.
+    """
+    # Make Request
+    res = r.get(
+        f'https://api.myanimelist.net/v2/manga/{myanimelist_id}?fields=mean',
+        headers={
+            'X-MAL-CLIENT-ID': os.getenv('MAL_CID')
+        }
+    )
+    clean = res.json()
+    
+    # Validate
+    if not 'mean' in clean:
+        return False
+    return clean['mean'] > float(min_score)

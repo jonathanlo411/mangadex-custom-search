@@ -1,8 +1,11 @@
 
+// Globals to track search state
 const states = ['notSelected', 'include', 'exclude']
 let tagState = {}
 let tagMapping = {}
+let malSelected = true
 
+// Main call
 async function main() {
     const tagsRaw = await fetch('/tags')
     const tags = await tagsRaw.json()
@@ -15,11 +18,25 @@ async function main() {
         tagTarget.appendChild(createTag(tagTitle))
     }
 
+    // Process special conditions
+    const malLock = document.querySelector('#mal-lock')
+    document.querySelector('#mal-check').addEventListener('click', () => {
+        malSelected = !malSelected
+        if (malSelected) {
+            malLock.classList.remove('blocked')
+        } else {
+            malLock.classList.add('blocked')
+        }
+    })
+
     // Load query parameter data
     const urlParams = new URLSearchParams(window.location.search);
     const loadedIncludes = urlParams.getAll('includes[]')
     const loadedExcludes = urlParams.getAll('excludes[]')
     const loadedLang = urlParams.get('ln')
+    const noMal = urlParams.get('noMal')
+    const malUser = urlParams.get('malUser')
+    const malMinScore = urlParams.get('malMinScore')
 
     // Impute onto page
     for (let i = 0; i < loadedIncludes.length; i ++) {
@@ -36,16 +53,45 @@ async function main() {
         tagMapping[tagTitle].classList.remove(states[0])
         tagMapping[tagTitle].classList.add(states[2])
     }
-    if (loadedLang) {
-        document.querySelector(`#${loadedLang}`).checked = true
+    if (loadedLang) document.querySelector(`#${loadedLang}`).checked = true
+    if (malUser) document.querySelector('#mal-username').value = malUser
+    if (malMinScore) document.querySelector('#mal-min-score').value = malMinScore
+    if (noMal) {
+        malSelected = false
+        document.querySelector('#mal-check').checked = false
+        malLock.classList.add('blocked')
     }
 
     // Handle submit logic
     const submitBt = document.querySelector('#submit')
     const clearBt = document.querySelector('#clear')
-    submitBt.addEventListener('click', handleSearch)
+    submitBt.addEventListener('click', () => handleSearch())
     clearBt.addEventListener('click', clearSearch)
+
+    // Handle Pagination logic
+    const page = urlParams.get('p')
+    if (!page || +page === 0) {
+        createCurrentPage(0)
+        createPaginationButtons(1)
+        createPaginationButtons(2)
+    } else if (+page === 1) {
+        createPaginationButtons(+page - 1)
+        createCurrentPage(1)
+        createPaginationButtons(+page + 1)
+        createPaginationButtons(+page + 2)
+
+    } else {
+        createPaginationButtons(+page - 2)
+        createPaginationButtons(+page - 1)
+        createCurrentPage(+page)
+        createPaginationButtons(+page + 1)
+        createPaginationButtons(+page + 2)
+    }
 }
+
+
+// --- Helpers ---
+
 
 function createTag(tagTitle) {
     // Create HTML object
@@ -71,7 +117,10 @@ function createTag(tagTitle) {
     return element
 }
 
-function handleSearch() {
+function handleSearch(page) {
+    // Initialize query
+    let searchQuery = '/?'
+
     // Gather all tags
     let includes = []
     let excludes = []
@@ -82,21 +131,39 @@ function handleSearch() {
             excludes.push(tag)
         }
     }
+    
+    // Build Query Params
+    const includesQuery = `&includes[]=${includes.join('&includes[]=')}`
+    const excludesQuery = `&excludes[]=${excludes.join('&excludes[]=')}`
+    if (includes.length > 0) { searchQuery += includesQuery }
+    if (excludes.length > 0) { searchQuery += excludesQuery }
 
     // Gather the original language
-    let lang;
+    let lang = '';
     const ko = document.querySelector('#ko').checked
     const ja = document.querySelector('#ja').checked
     if (ko ^ ja) { // Bitwise XOR
         if (ko) lang = 'ko'
         if (ja) lang = 'ja'
     }
+    if (lang) { searchQuery += `&ln=${lang}` }
 
-    // Build Query Params
-    const includesQuery = `&includes[]=${includes.join('&includes[]=')}`
-    const excludesQuery = `&excludes[]=${excludes.join('&excludes[]=')}`
+    // Handle MAL Spec
+    let malUser = '';
+    let malMinScore = '';
+    if (malSelected) {
+        malUser = document.querySelector('#mal-username').value
+        malMinScore = document.querySelector('#mal-min-score').value
+        if (malUser) { searchQuery += `&malUser=${malUser}`}
+        if (malMinScore > 0) { searchQuery += `&malMinScore=${malMinScore}`}
+    } else {
+        searchQuery += `&noMal=true`
+    }
 
-    window.location.href = `/?${includesQuery}${excludesQuery}&ln=${(lang) ? lang : ''}`
+    // Handle Pagination
+    if (page) { searchQuery += `&p=${page}` }
+
+    window.location.href = searchQuery
 }
 
 function clearSearch() {
@@ -110,6 +177,30 @@ function clearSearch() {
         tagMapping[tag].classList.add(states[0])
         tagState[tag] = 0;
     }
+}
+
+function createPaginationButtons(page) {
+    const paginationTarget = document.querySelector('#page-controls')
+    const button = document.createElement('button')
+    button.addEventListener('click', () => {handleSearch(page)})
+    button.textContent = page
+    paginationTarget.appendChild(button)
+}
+
+function createCurrentPage(page) {
+    const paginationTarget = document.querySelector('#page-controls')
+    const form = document.createElement('form')
+    const curPageElem = document.createElement('input')
+    curPageElem.value = page
+    form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const inputNum = +curPageElem.value
+        if (inputNum) {
+            handleSearch(inputNum)
+        }
+    })
+    form.appendChild(curPageElem)
+    paginationTarget.appendChild(form)
 }
 
 main()

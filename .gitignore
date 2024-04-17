@@ -1,7 +1,10 @@
 # Setup
 config.json
+.env
 
 # Python Overhead
 __pycache__
 venv
+
+# Deployment stuff
 .vercel
