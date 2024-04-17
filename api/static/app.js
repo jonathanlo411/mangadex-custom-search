@@ -43,8 +43,29 @@ async function main() {
     // Handle submit logic
     const submitBt = document.querySelector('#submit')
     const clearBt = document.querySelector('#clear')
-    submitBt.addEventListener('click', handleSearch)
+    submitBt.addEventListener('click', () => handleSearch())
     clearBt.addEventListener('click', clearSearch)
+
+    // Handle Pagination logic
+    const page = urlParams.get('p')
+    const paginationTarget = document.querySelector('#page-controls')
+    if (!page || +page === 0) {
+        createCurrentPage(0)
+        createPaginationButtons(1)
+        createPaginationButtons(2)
+    } else if (+page === 1) {
+        createPaginationButtons(+page - 1)
+        createCurrentPage(1)
+        createPaginationButtons(+page + 1)
+        createPaginationButtons(+page + 2)
+
+    } else {
+        createPaginationButtons(+page - 2)
+        createPaginationButtons(+page - 1)
+        createCurrentPage(+page)
+        createPaginationButtons(+page + 1)
+        createPaginationButtons(+page + 2)
+    }
 }
 
 function createTag(tagTitle) {
@@ -71,7 +92,7 @@ function createTag(tagTitle) {
     return element
 }
 
-function handleSearch() {
+function handleSearch(page) {
     // Gather all tags
     let includes = []
     let excludes = []
@@ -84,7 +105,7 @@ function handleSearch() {
     }
 
     // Gather the original language
-    let lang;
+    let lang = '';
     const ko = document.querySelector('#ko').checked
     const ja = document.querySelector('#ja').checked
     if (ko ^ ja) { // Bitwise XOR
@@ -95,8 +116,9 @@ function handleSearch() {
     // Build Query Params
     const includesQuery = `&includes[]=${includes.join('&includes[]=')}`
     const excludesQuery = `&excludes[]=${excludes.join('&excludes[]=')}`
+    const pageQuery = (page) ? page : ''
 
-    window.location.href = `/?${includesQuery}${excludesQuery}&ln=${(lang) ? lang : ''}`
+    window.location.href = `/?${includesQuery}${excludesQuery}&ln=${lang}&p=${pageQuery}`
 }
 
 function clearSearch() {
@@ -110,6 +132,30 @@ function clearSearch() {
         tagMapping[tag].classList.add(states[0])
         tagState[tag] = 0;
     }
+}
+
+function createPaginationButtons(page) {
+    const paginationTarget = document.querySelector('#page-controls')
+    const button = document.createElement('button')
+    button.addEventListener('click', () => {handleSearch(page)})
+    button.textContent = page
+    paginationTarget.appendChild(button)
+}
+
+function createCurrentPage(page) {
+    const paginationTarget = document.querySelector('#page-controls')
+    const form = document.createElement('form')
+    const curPageElem = document.createElement('input')
+    curPageElem.value = page
+    form.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const inputNum = +curPageElem.value
+        if (inputNum) {
+            handleSearch(inputNum)
+        }
+    })
+    form.appendChild(curPageElem)
+    paginationTarget.appendChild(form)
 }
 
 main()

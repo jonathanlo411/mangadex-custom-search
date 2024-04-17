@@ -187,3 +187,54 @@ section {
     padding: 0.5rem;
     font-size: 1rem;
 }
+#no-entries {
+    width: 100%;
+    text-align: center;
+    margin: 10rem auto;
+}
+#no-entries h3 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+#no-entries p {
+    font-size: 1.2rem;
+    margin: 0.3rem;
+}
+#page-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem;
+}
+#page-controls * {
+    font-size: 1.3rem;
+    margin: 0.2rem;
+    text-align: center;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--highlight);
+    font-weight: bold;
+    color: var(--font);
+    border: none;
+    border-radius: 5px;
+    padding: 0.1rem;
+}
+#page-controls *:hover {
+    cursor: pointer;
+    opacity: 0.8;
+}
+#page-controls form, #page-controls form input {
+    background-color: white !important;
+    color: black;
+    width: 3rem;
+}
+#page-controls form:hover, #page-controls form input:hover {
+    cursor: text !important;
+}
+#page-controls form:focus, #page-controls form input:focus {
+    outline: none;
+}

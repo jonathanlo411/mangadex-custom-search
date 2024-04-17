@@ -31,29 +31,39 @@
             <button class='search-bt' id="submit">Search</button>
             <button class='search-bt' id="clear">Clear</button>
         </div>
-        <section>
-        {% for manga in context.filtered %}
 
-            <a
-                class="card"
-                href="https://mangadex.org/title/{{manga.id}}"
-                target="_blank"
-                rel="norefferrer"
-            >
-                <img src="/mdimg?md={{manga.id}}&fn={{context.covers[manga.id]}}.256.jpg" />
-                {% if manga.attributes.title.en %}
-                    <h1>{{manga.attributes.title.en}}</h1>
-                {% elif manga.attributes.title.kr %}
-                    <h1>{{manga.attributes.title.kr}}</h1>
-                {% elif manga.attributes.title['ja-ro'] %}
-                    <h1>{{manga.attributes.title['ja-ro']}}</h1>
-                {% else %}
-                    <h1>Title Not Available</h1>
-                {% endif %}
-            </a>
+        {% if context.filtered|length > 0 %}
+            <section>
+            {% for manga in context.filtered %}
 
-        {% endfor %}
-        </section>
+                <a
+                    class="card"
+                    href="https://mangadex.org/title/{{manga.id}}"
+                    target="_blank"
+                    rel="norefferrer"
+                >
+                    <img src="/mdimg?md={{manga.id}}&fn={{context.covers[manga.id]}}.256.jpg" />
+                    {% if manga.attributes.title.en %}
+                        <h1>{{manga.attributes.title.en}}</h1>
+                    {% elif manga.attributes.title.kr %}
+                        <h1>{{manga.attributes.title.kr}}</h1>
+                    {% elif manga.attributes.title['ja-ro'] %}
+                        <h1>{{manga.attributes.title['ja-ro']}}</h1>
+                    {% else %}
+                        <h1>Title Not Available</h1>
+                    {% endif %}
+                </a>
+
+            {% endfor %}
+
+            </section>
+            <div id="page-controls"></div>
+        {% else %}
+            <div id="no-entries">
+                <h3>No Entries Available</h3>
+                <p>Please reduce the scope of your search.</p>
+            </div>
+        {% endif %}
 
     </main>
 </body>
