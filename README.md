@@ -11,7 +11,8 @@ python3 -m venv venv
 . venv/bin/activate  # or . venv/Scripts/activate if on windows
 pip install -r requirements.txt
 ```
-3. Launch the Flask app by running the following
+3. Create a `.env` file following the schema of `sample.env`
+4. Launch the Flask app by running the following
 ```
 flask --app api/search run
 ```
