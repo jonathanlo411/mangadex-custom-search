@@ -34,6 +34,7 @@ async function main() {
     const loadedIncludes = urlParams.getAll('includes[]')
     const loadedExcludes = urlParams.getAll('excludes[]')
     const loadedLang = urlParams.get('ln')
+    const noMal = urlParams.get('noMal')
     const malUser = urlParams.get('malUser')
     const malMinScore = urlParams.get('malMinScore')
 
@@ -55,6 +56,11 @@ async function main() {
     if (loadedLang) document.querySelector(`#${loadedLang}`).checked = true
     if (malUser) document.querySelector('#mal-username').value = malUser
     if (malMinScore) document.querySelector('#mal-min-score').value = malMinScore
+    if (noMal) {
+        malSelected = false
+        document.querySelector('#mal-check').checked = false
+        malLock.classList.add('blocked')
+    }
 
     // Handle submit logic
     const submitBt = document.querySelector('#submit')
@@ -150,6 +156,8 @@ function handleSearch(page) {
         malMinScore = document.querySelector('#mal-min-score').value
         if (malUser) { searchQuery += `&malUser=${malUser}`}
         if (malMinScore > 0) { searchQuery += `&malMinScore=${malMinScore}`}
+    } else {
+        searchQuery += `&noMal=true`
     }
 
     // Handle Pagination
