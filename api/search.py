@@ -16,7 +16,9 @@ TAGS: dict = r.get(
 @app.route('/', methods=['GET'])
 def landing() -> None:
     # Process pagination
-    offest = int(request.args['p']) * 100 if 'p' in request.args else 0
+    offest = 0
+    if 'p' in request.args and len(request.args['p']) > 0:
+        offest = int(request.args['p']) * 100
 
     # Handle tag logic
     includes: list[str] = []
@@ -34,6 +36,7 @@ def landing() -> None:
 
     # Get Manga items
     starter = make_request(includes, excludes, offest, original_language)
+    if starter == 0: return render_template('index.html', context={'filtered':{}})
     filtered = filter_mangadex(starter)
 
     # Get Manga covers
