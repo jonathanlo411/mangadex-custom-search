@@ -45,6 +45,11 @@ def landing() -> None:
     })
 
 
+@app.route('/about', methods=['GET'])
+def about() -> None:
+    return render_template('about.html')
+
+
 # --- APIs ---
 @app.route('/mdimg', methods=['GET'])
 def get_image() -> Response:
