@@ -7,6 +7,7 @@
 
     /* Color Vars */
     --base: #2c2c2c;
+    --secondary: rgb(37, 37, 37);
     --highlight: #fc6444;
     --font: white;
 
@@ -40,7 +41,7 @@ main {
     margin: auto;
 }
 #heading {
-    margin: 2em 0;
+    margin: 2em 0 1rem;
 }
 #heading h1 {
     font-size: 3em;
@@ -60,6 +61,16 @@ h2 {
 .blocked:hover, .blocked:hover * { cursor: not-allowed !important; }
 
 /* Query Options */
+#expand-search {
+    background-color: var(--highlight);
+    margin-bottom: 1rem !important;
+    border: 1px solid orangered;
+    color: white;
+}
+#search-form {
+    display: none;
+    transition: 0.3s;
+}
 #lang {
     display: flex;
 }
@@ -67,7 +78,7 @@ h2 {
     margin: 1rem;
 }
 .tag {
-    background-color: rgb(37, 37, 37);
+    background-color: var(--secondary);
     color: var(--font);
     padding: 0.3rem 0.5rem;
     border: none;
@@ -302,5 +313,27 @@ section {
         max-height: none;
         max-width: calc(48vw - 5%);
         border-radius: 5px;
+    }
+}
+
+/* CSS Animations */
+@keyframes dropDown {
+    0% {
+    transform: translateY(-20px);
+    opacity: 0;
+    }
+    100% {
+    transform: translateY(0);
+    opacity: 1;
+    }
+}
+@keyframes slideUp {
+    0% {
+    transform: translateY(0);
+    opacity: 1;
+    }
+    100% {
+    transform: translateY(-20px);
+    opacity: 0;
     }
 }
