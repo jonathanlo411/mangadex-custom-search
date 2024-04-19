@@ -4,11 +4,13 @@ const states = ['notSelected', 'include', 'exclude']
 let tagState = {}
 let tagMapping = {}
 let malSelected = true
+let isExpanded = false
 
 // Main call
 async function main() {
     const tagsRaw = await fetch('/tags')
     const tags = await tagsRaw.json()
+    tags.sort()
 
     // Add tags to form
     const tagTarget = document.querySelector('#tags')
@@ -37,6 +39,7 @@ async function main() {
     const noMal = urlParams.get('noMal')
     const malUser = urlParams.get('malUser')
     const malMinScore = urlParams.get('malMinScore')
+    const formOpen = urlParams.get('formOpen')
 
     // Impute onto page
     for (let i = 0; i < loadedIncludes.length; i ++) {
@@ -60,6 +63,15 @@ async function main() {
         malSelected = false
         document.querySelector('#mal-check').checked = false
         malLock.classList.add('blocked')
+    }
+
+    // Load form dropdown
+    if (formOpen || formOpen === 'true') {
+        loadSearch()
+    } else if (urlParams.size > 0) {
+        loadSearch()
+    } else {
+        loadSearch(true)
     }
 
     // Handle submit logic
@@ -201,6 +213,26 @@ function createCurrentPage(page) {
     })
     form.appendChild(curPageElem)
     paginationTarget.appendChild(form)
+}
+
+function loadSearch(loadExpanded = false) {
+    const expandButton = document.getElementById('expand-search');
+    const searchForm = document.getElementById('search-form');
+
+    expandButton.addEventListener('click', () => {
+        if (isExpanded) {
+            searchForm.style.animation = 'slideUp 0.5s ease-in-out forwards';
+            setTimeout(() => {
+            searchForm.style.display = 'none';
+            }, 500); // Wait for the animation to complete
+        } else {
+            searchForm.style.display = 'block';
+            searchForm.style.animation = 'dropDown 0.5s ease-in-out forwards';
+        }
+        isExpanded = !isExpanded;
+    });
+    
+    if (loadExpanded) expandButton.click()
 }
 
 main()
