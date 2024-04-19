@@ -282,3 +282,25 @@ section {
 #page-controls form:focus, #page-controls form input:focus {
     outline: none;
 }
+
+
+/* Mobile Adjustments */
+@media screen and (max-width: 900px) {
+    /* Query Opts */
+    #mal { flex-direction: column; }
+    .search-bt {
+        width: 95%;
+        margin: 0.5rem auto;
+    }
+    
+    /* Display Manga */
+    section { grid-template-columns: repeat(2, 50%); }
+    .card { 
+        margin: 0 0.4rem;
+    }
+    .card img {
+        max-height: none;
+        max-width: calc(48vw - 5%);
+        border-radius: 5px;
+    }
+}
