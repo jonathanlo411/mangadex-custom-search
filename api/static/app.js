@@ -10,6 +10,7 @@ let isExpanded = false
 async function main() {
     const tagsRaw = await fetch('/tags')
     const tags = await tagsRaw.json()
+    tags.sort()
 
     // Add tags to form
     const tagTarget = document.querySelector('#tags')
