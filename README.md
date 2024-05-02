@@ -5,7 +5,7 @@ This website serves as a custom way to search through MangaDex titles. It has mo
 
 ## Using Locally
 1. Clone the repository.
-2. Inside the repo directory and create a virtual enviroment. Download the packages as defined in `requirements.txt`.
+2. `cd` into the repo directory and create a virtual enviroment. Download the packages as defined in `requirements.txt`.
 ```bash
 python3 -m venv venv
 . venv/bin/activate  # or . venv/Scripts/activate if on windows
