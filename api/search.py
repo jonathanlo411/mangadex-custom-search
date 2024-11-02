@@ -48,9 +48,13 @@ def landing() -> None:
     # Get Manga covers
     cover_filenames = obtain_cover_filenames(filtered)
 
+    # Get result settings
+    display_en = request.args['displayEn'] if 'displayEn' in request.args else False
+
     return render_template('index.html', context={
         'filtered': filtered,
-        'covers': cover_filenames
+        'covers': cover_filenames,
+        'display_en': bool(display_en)
     })
 
 

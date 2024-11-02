@@ -40,6 +40,7 @@ async function main() {
     const malUser = urlParams.get('malUser')
     const malMinScore = urlParams.get('malMinScore')
     const formOpen = urlParams.get('formOpen')
+    const displayEn = urlParams.get('displayEn')
 
     // Impute onto page
     for (let i = 0; i < loadedIncludes.length; i ++) {
@@ -64,6 +65,7 @@ async function main() {
         document.querySelector('#mal-check').checked = false
         malLock.classList.add('blocked')
     }
+    if (displayEn) document.querySelector('#display-en').checked = true
 
     // Load form dropdown
     if (formOpen || formOpen === 'true') {
@@ -174,6 +176,10 @@ function handleSearch(page) {
 
     // Handle Pagination
     if (page) { searchQuery += `&p=${page}` }
+
+    // Handle Result settings
+    let displayEn = document.querySelector('#display-en').checked
+    if (displayEn) searchQuery += '&displayEn=true'
 
     window.location.href = searchQuery
 }
