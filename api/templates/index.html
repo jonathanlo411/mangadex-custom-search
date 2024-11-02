@@ -62,6 +62,14 @@
                 </div>
             </div>
 
+            <h2>Result Settings</h2>
+            <div id="result-settings">
+                <label class="container">Display English Title
+                    <input type="checkbox" id="display-en">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
             <button class='search-bt' id="submit">Search</button>
             <button class='search-bt' id="clear">Clear</button>
         </div>
@@ -77,14 +85,31 @@
                     rel="norefferrer"
                 >
                     <img src="/mdimg?md={{manga.id}}&fn={{context.covers[manga.id]}}.256.jpg" />
-                    {% if manga.attributes.title.en %}
-                        <h1>{{manga.attributes.title.en}}</h1>
-                    {% elif manga.attributes.title.kr %}
-                        <h1>{{manga.attributes.title.kr}}</h1>
-                    {% elif manga.attributes.title['ja-ro'] %}
-                        <h1>{{manga.attributes.title['ja-ro']}}</h1>
+                    {% if context.display_en %}
+                        {% set english_alt_title = manga.attributes.altTitles | selectattr('en') | first %}
+                        {% set title = english_alt_title.en if english_alt_title else None %}
+                        
+                        {% if title %}
+                            <h1>{{ title }}</h1>
+                        {% elif manga.attributes.title.en %}
+                            <h1>{{ manga.attributes.title.en }}</h1>
+                        {% elif manga.attributes.title.kr %}
+                            <h1>{{ manga.attributes.title.kr }}</h1>
+                        {% elif manga.attributes.title['ja-ro'] %}
+                            <h1>{{ manga.attributes.title['ja-ro'] }}</h1>
+                        {% else %}
+                            <h1>Title Not Available</h1>
+                        {% endif %}
                     {% else %}
-                        <h1>Title Not Available</h1>
+                        {% if manga.attributes.title.en %}
+                            <h1>{{manga.attributes.title.en}}</h1>
+                        {% elif manga.attributes.title.kr %}
+                            <h1>{{manga.attributes.title.kr}}</h1>
+                        {% elif manga.attributes.title['ja-ro'] %}
+                            <h1>{{manga.attributes.title['ja-ro']}}</h1>
+                        {% else %}
+                            <h1>Title Not Available</h1>
+                        {% endif %}
                     {% endif %}
                 </a>
 
