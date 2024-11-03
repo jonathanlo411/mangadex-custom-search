@@ -147,7 +147,8 @@ def filter_mangadex(
                 f'https://api.myanimelist.net/v2/users/{malUser}/mangalist',
                 params={
                     'limit': 1000,
-                    'manga_id': 'Descending'
+                    'manga_id': 'Descending',
+                    'nsfw': True
                 },
                 headers={
                     'X-MAL-CLIENT-ID': os.getenv('MAL_CID')
